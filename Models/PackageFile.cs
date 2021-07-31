@@ -8,7 +8,7 @@ namespace JSDelivrCLI.Models
     {
         public PackageFile()
         {
-            FilesInfo = new List<PackageFile>();
+            Files = new List<PackageFile>();
         }
 
         [JsonPropertyName("type")]
@@ -27,6 +27,6 @@ namespace JSDelivrCLI.Models
         public int Size { get; set; }
 
         [JsonPropertyName("files")]
-        public List<PackageFile> FilesInfo { get; set; }
+        public List<PackageFile> Files { get; set; }
     }
 }

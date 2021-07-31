@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,7 +10,8 @@ namespace JSDelivrCLI.Services
 {
     public class CDNService
     {
-        private string api = "https://data.jsdelivr.com/v1/package/npm/";
+        private readonly string api = "https://data.jsdelivr.com/v1/package/npm/";
+        private readonly string url = "https://cdn.jsdelivr.net/npm/";
 
         private readonly HttpClient httpClient;
 
@@ -18,31 +21,65 @@ namespace JSDelivrCLI.Services
         }
 
         // 获取包版本信息
-        public async Task<PackageVersion> GetLibraryVersions(string libraryName)
+        public PackageVersion GetLibraryVersions(string libraryName)
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{api}{libraryName}");
-            string jsonStr = await responseMessage.Content.ReadAsStringAsync();
+            string path = Path.Combine(api, libraryName);
+            HttpResponseMessage responseMessage = httpClient.GetAsync(path).Result;
+            string jsonStr = responseMessage.Content.ReadAsStringAsync().Result;
             return JsonSerializer.Deserialize<PackageVersion>(jsonStr);
         }
 
         // 获取包文件列表
-        public async Task<PackageFile> GetFileList(ConfigPara para)
+        public Package GetFileList(ConfigPara para)
         {
             if(string.IsNullOrEmpty(para.Version))
             {
-                PackageVersion version = await GetLibraryVersions(para.Name);
+                PackageVersion version = GetLibraryVersions(para.Name);
                 para.Version = version.Tag.Latest;
             }
 
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{api}{para.ToString()}");
-            string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<PackageFile>(jsonStr);
+            string path = Path.Combine(api, para.ToString());
+            HttpResponseMessage responseMessage = httpClient.GetAsync(path).Result;
+            string jsonStr = responseMessage.Content.ReadAsStringAsync().Result;
+            return JsonSerializer.Deserialize<Package>(jsonStr);
         }
 
-        public async Task<string> Download(ConfigPara para)
+        public string Download(ConfigPara para)
         {
-            PackageFile packageFile = await GetFileList(para);
-            return JsonSerializer.Serialize(packageFile);
+            Package packageFile = GetFileList(para);
+            if(!Directory.Exists(para.Name))
+                Directory.CreateDirectory(para.Name);
+            
+            SaveFile(para, string.Empty, packageFile.Files);
+            return string.Empty;
+        }
+
+        private void SaveFile(ConfigPara para, string parentPath, List<PackageFile> packageFile)
+        {
+            packageFile.ForEach(file => 
+            {
+                string path = Path.Combine(parentPath, file.Name);
+                if (file.Type == "directory")
+                {
+                    SaveFile(para, path, file.Files);
+                }
+                else
+                {
+                    string dirName = Path.Combine(para.Name, parentPath);
+                    string localPath = Path.Combine(para.Name, path);
+                    string remotePath = Path.Combine(url, para.ToString(), path);
+                    
+                    Console.WriteLine($"downloading {remotePath}");
+                    HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
+                    string content = responseMessage.Content.ReadAsStringAsync().Result;
+
+                    Console.WriteLine($"writefile {localPath}");
+                    if (!Directory.Exists(dirName))
+                        Directory.CreateDirectory(dirName);
+
+                    File.WriteAllText(localPath, content);
+                }
+            });
         }
     }
 }
