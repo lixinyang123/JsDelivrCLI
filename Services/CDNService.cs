@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 using JSDelivrCLI.Models;
 
 namespace JSDelivrCLI.Services
@@ -12,12 +11,14 @@ namespace JSDelivrCLI.Services
     {
         private readonly string api = "https://data.jsdelivr.com/v1/package/npm/";
         private readonly string url = "https://cdn.jsdelivr.net/npm/";
+        private List<string> errorList;
 
         private readonly HttpClient httpClient;
 
         public CDNService()
         {
             httpClient = new HttpClient();
+            errorList = new List<string>();
         }
 
         // 获取包版本信息
@@ -34,7 +35,9 @@ namespace JSDelivrCLI.Services
         {
             if(string.IsNullOrEmpty(para.Version))
             {
+                Console.WriteLine("use version latest");
                 PackageVersion version = GetLibraryVersions(para.Name);
+                Console.WriteLine($"the latest version is {version.Tag.Latest}");
                 para.Version = version.Tag.Latest;
             }
 
@@ -44,17 +47,21 @@ namespace JSDelivrCLI.Services
             return JsonSerializer.Deserialize<Package>(jsonStr);
         }
 
-        public string Download(ConfigPara para)
+        public bool Download(ConfigPara para)
         {
             Package packageFile = GetFileList(para);
-            if(!Directory.Exists(para.Name))
-                Directory.CreateDirectory(para.Name);
             
-            SaveFile(para, string.Empty, packageFile.Files);
-            return string.Empty;
+            errorList.Clear();
+            bool flag = SaveFile(para, string.Empty, packageFile.Files);
+
+            errorList.ForEach(i => 
+            {
+                Console.WriteLine($"## {i} download faled ##");
+            });
+            return flag;
         }
 
-        private void SaveFile(ConfigPara para, string parentPath, List<PackageFile> packageFile)
+        private bool SaveFile(ConfigPara para, string parentPath, List<PackageFile> packageFile)
         {
             packageFile.ForEach(file => 
             {
@@ -69,17 +76,25 @@ namespace JSDelivrCLI.Services
                     string localPath = Path.Combine(para.Name, path);
                     string remotePath = Path.Combine(url, para.ToString(), path);
                     
-                    Console.WriteLine($"downloading {remotePath}");
-                    HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
-                    string content = responseMessage.Content.ReadAsStringAsync().Result;
+                    try
+                    {
+                        HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
+                        string content = responseMessage.Content.ReadAsStringAsync().Result;
 
-                    Console.WriteLine($"writefile {localPath}");
-                    if (!Directory.Exists(dirName))
-                        Directory.CreateDirectory(dirName);
+                        Console.WriteLine($"writefile {localPath}");
+                        if (!Directory.Exists(dirName))
+                            Directory.CreateDirectory(dirName);
 
-                    File.WriteAllText(localPath, content);
+                        File.WriteAllText(localPath, content);
+                    }
+                    catch (Exception)
+                    {
+                        errorList.Add(remotePath);
+                    }
                 }
             });
+
+            return errorList.Count == 0;
         }
     }
 }

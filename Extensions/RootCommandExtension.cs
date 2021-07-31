@@ -38,7 +38,7 @@ namespace JSDelivrCLI.Extensions
             installCommand.Handler = CommandHandler.Create<string>(library => 
             {
                 ConfigPara para = new ConfigPara(library);
-                string result = cdnService.Download(para);
+                bool result = cdnService.Download(para);
                 Console.WriteLine(result);
             });
             rootCommand.Add(installCommand);
