@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using JSDelivrCLI.Common;
 using JSDelivrCLI.Models;
 
 namespace JSDelivrCLI.Services
@@ -35,13 +36,15 @@ namespace JSDelivrCLI.Services
         {
             if(string.IsNullOrEmpty(para.Version))
             {
-                Console.WriteLine("use version latest");
+                Console.WriteLine("Use latest version");
                 PackageVersion version = GetLibraryVersions(para.Name);
-                Console.WriteLine($"the latest version is {version.Tag.Latest}");
+                ConsoleTool.WriteColorful($"Latest version is {version.Tag.Latest}\n", ConsoleColor.Green);
                 para.Version = version.Tag.Latest;
             }
 
             string path = Path.Combine(api, para.ToString());
+            Console.WriteLine("Get library info...");
+            
             HttpResponseMessage responseMessage = httpClient.GetAsync(path).Result;
             string jsonStr = responseMessage.Content.ReadAsStringAsync().Result;
             return JsonSerializer.Deserialize<Package>(jsonStr);
@@ -51,12 +54,13 @@ namespace JSDelivrCLI.Services
         {
             Package packageFile = GetFileList(para);
             
+            ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
             bool flag = SaveFile(para, string.Empty, packageFile.Files);
 
             errorList.ForEach(i => 
             {
-                Console.WriteLine($"## {i} download faled ##");
+                ConsoleTool.WriteColorful($"\nError: {i} download faled", ConsoleColor.Red);
             });
             return flag;
         }
@@ -81,7 +85,7 @@ namespace JSDelivrCLI.Services
                         HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
                         string content = responseMessage.Content.ReadAsStringAsync().Result;
 
-                        Console.WriteLine($"writefile {localPath}");
+                        Console.WriteLine($"Writefile {localPath}");
                         if (!Directory.Exists(dirName))
                             Directory.CreateDirectory(dirName);
 
@@ -89,6 +93,7 @@ namespace JSDelivrCLI.Services
                     }
                     catch (Exception)
                     {
+                        ConsoleTool.WriteColorful($"Faled {localPath}", ConsoleColor.Red);
                         errorList.Add(remotePath);
                     }
                 }

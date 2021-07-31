@@ -1,3 +1,4 @@
+using JSDelivrCLI.Common;
 using JSDelivrCLI.Models;
 using JSDelivrCLI.Services;
 using System;
@@ -39,7 +40,11 @@ namespace JSDelivrCLI.Extensions
             {
                 ConfigPara para = new ConfigPara(library);
                 bool result = cdnService.Download(para);
-                Console.WriteLine(result);
+
+                if (result)
+                    ConsoleTool.WriteColorful("\nInstall libary successful", ConsoleColor.Green);
+                else
+                    ConsoleTool.WriteColorful("\nSome file download faled", ConsoleColor.Red);
             });
             rootCommand.Add(installCommand);
 
