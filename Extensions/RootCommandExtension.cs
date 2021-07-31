@@ -36,15 +36,20 @@ namespace JSDelivrCLI.Extensions
             //============================= Install Command =================================
             Command installCommand = new Command("install", "install a package from jsdelivr");
             installCommand.Add(new Argument<string>("library", "library name and version \n eg. jquery \n eg. jquery@3.6.0"));
-            installCommand.Handler = CommandHandler.Create<string>(library => 
+            installCommand.Add(new Option<string>("--dir", "library install directory"));
+            installCommand.Handler = CommandHandler.Create<string, string>((library, dir) => 
             {
                 ConfigPara para = new ConfigPara(library);
-                bool result = cdnService.Download(para);
+                bool result = cdnService.Download(para, dir);
 
-                if (result)
-                    ConsoleTool.WriteColorful("\nInstall libary successful", ConsoleColor.Green);
-                else
+                if(!result)
+                {
                     ConsoleTool.WriteColorful("\nSome file download faled", ConsoleColor.Red);
+                    return;
+                }
+
+                ConsoleTool.WriteColorful("\nInstall libary successful", ConsoleColor.Green);
+                // Add Config
             });
             rootCommand.Add(installCommand);
 

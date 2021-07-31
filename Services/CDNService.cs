@@ -50,13 +50,13 @@ namespace JSDelivrCLI.Services
             return JsonSerializer.Deserialize<Package>(jsonStr);
         }
 
-        public bool Download(ConfigPara para)
+        public bool Download(ConfigPara para, string dir = "")
         {
             Package packageFile = GetFileList(para);
             
             ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
-            bool flag = SaveFile(para, string.Empty, packageFile.Files);
+            bool flag = SaveFile(dir, para, string.Empty, packageFile.Files);
 
             errorList.ForEach(i => 
             {
@@ -65,19 +65,19 @@ namespace JSDelivrCLI.Services
             return flag;
         }
 
-        private bool SaveFile(ConfigPara para, string parentPath, List<PackageFile> packageFile)
+        private bool SaveFile(string saveDir, ConfigPara para, string parentPath, List<PackageFile> packageFile)
         {
             packageFile.ForEach(file => 
             {
                 string path = Path.Combine(parentPath, file.Name);
                 if (file.Type == "directory")
                 {
-                    SaveFile(para, path, file.Files);
+                    SaveFile(saveDir, para, path, file.Files);
                 }
                 else
                 {
-                    string dirName = Path.Combine(para.Name, parentPath);
-                    string localPath = Path.Combine(para.Name, path);
+                    string dirName = Path.Combine(saveDir, para.Name, parentPath);
+                    string localPath = Path.Combine(saveDir, para.Name, path);
                     string remotePath = Path.Combine(url, para.ToString(), path);
                     
                     try
