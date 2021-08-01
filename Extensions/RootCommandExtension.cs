@@ -89,6 +89,16 @@ namespace JSDelivrCLI.Extensions
             restoreCommand.Handler = CommandHandler.Create(() => 
             {
                 // Restore client side package
+                configService.GetLibraries().ForEach(library => 
+                {
+                    ConfigPara para = new ConfigPara(library.Name);
+                    bool result = cdnService.Download(para, library.Destination.Replace($"{para.Name}", string.Empty));
+
+                    if (result)
+                        ConsoleTool.WriteColorful($"\nrestore {library.Name} successful\n", ConsoleColor.Green);
+                    else
+                        ConsoleTool.WriteColorful($"\nrestore {library.Name} faled\n", ConsoleColor.Red);
+                });
             });
             rootCommand.Add(restoreCommand);
 

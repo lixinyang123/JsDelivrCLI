@@ -2,6 +2,7 @@ using JSDelivrCLI.Models;
 using System.IO;
 using System.Text.Json;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace JSDelivrCLI.Services
 {
@@ -32,5 +33,7 @@ namespace JSDelivrCLI.Services
             File.WriteAllText(configPath,
                 JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
             );
+
+        public List<ConfigItem> GetLibraries() => config.Libraries;
     }
 }

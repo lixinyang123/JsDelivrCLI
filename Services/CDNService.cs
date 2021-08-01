@@ -82,6 +82,9 @@ namespace JSDelivrCLI.Services
                     
                     try
                     {
+                        if(File.Exists(localPath))
+                            return;
+
                         HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
                         string content = responseMessage.Content.ReadAsStringAsync().Result;
 
