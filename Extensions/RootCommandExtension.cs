@@ -81,9 +81,14 @@ namespace JSDelivrCLI.Extensions
 
             //============================== Search Command ==================================
             Command searchCommand = new Command("search", "search package from npm");
-            searchCommand.Handler = CommandHandler.Create<string>((libraryName) => 
+            searchCommand.Add(new Argument<string>("library", "search library name"));
+            searchCommand.Handler = CommandHandler.Create<string>(async(library) => 
             {
-                // Search package from npm
+                SearchInfo searchInfo = await cdnService.Search(library);
+                searchInfo.objects.ForEach(obj => 
+                {
+                    Console.WriteLine($"{obj.package.name} => {obj.package.version}");
+                });
             });
             rootCommand.Add(searchCommand);
 

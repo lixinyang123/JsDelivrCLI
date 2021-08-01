@@ -17,4 +17,13 @@ namespace JSDelivrCLI.Models
         [JsonPropertyName("versions")]
         public List<string> Versions { get; set; }
     }
+
+    public class LibraryTag
+    {
+        [JsonPropertyName("beta")]
+        public string Beta { get; set; }
+
+        [JsonPropertyName("latest")]
+        public string Latest { get; set; }
+    }
 }

@@ -24,9 +24,13 @@ namespace JSDelivrCLI.Services
             errorList = new List<string>();
         }
 
-        public void Search(string libraryName)
+        // 搜索包信息
+        public async Task<SearchInfo> Search(string libraryName)
         {
-
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(searchApi + libraryName);
+            string jsonStr = await responseMessage.Content.ReadAsStringAsync();
+            SearchInfo searchInfo = JsonSerializer.Deserialize<SearchInfo>(jsonStr);
+            return searchInfo;
         }
 
         // 获取包版本信息
