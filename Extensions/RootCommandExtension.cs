@@ -12,10 +12,12 @@ namespace JSDelivrCLI.Extensions
     public static class RootCommandExtension
     {
         private static CDNService cdnService;
+        private static ConfigService configService;
 
         private static void InitService()
         {
             cdnService = new CDNService();
+            configService = new ConfigService();
         }
 
         public static RootCommand Initialize(this RootCommand rootCommand)
@@ -50,6 +52,12 @@ namespace JSDelivrCLI.Extensions
 
                 ConsoleTool.WriteColorful("\nInstall libary successful", ConsoleColor.Green);
                 // Add Config
+                configService.AddLibrary(new ConfigItem()
+                {
+                    Name = para.ToString(),
+                    Destination = Path.Combine(dir, para.Name)
+                });
+                configService.Save();
             });
             rootCommand.Add(installCommand);
 
