@@ -43,22 +43,22 @@ namespace JSDelivrCLI.Services
         }
 
         // 获取包文件列表
-        public async Task<Library> GetFileList(ConfigPara para)
+        public async Task<Library> GetFileList(ConfigItem item)
         {
-            LibraryVersion version = await GetLibraryVersions(para.Name);
-            if(string.IsNullOrEmpty(para.Version))
+            LibraryVersion version = await GetLibraryVersions(item.Name);
+            if(string.IsNullOrEmpty(item.Version))
             {
                 ConsoleTool.WriteColorful($"Use latest version {version.Tag.Latest}\n", ConsoleColor.Green);
-                para.Version = version.Tag.Latest;
+                item.Version = version.Tag.Latest;
             }
 
-            if(!version.Versions.Contains(para.Version))
+            if(!version.Versions.Contains(item.Version))
             {
                 ConsoleTool.WriteColorful($"Can't find version {version.Tag.Latest}", ConsoleColor.Red);
                 return null;
             }
 
-            string path = Path.Combine(api, para.ToString());
+            string path = Path.Combine(api, item.ToString());
             Console.WriteLine("Get library info...");
             
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
@@ -67,16 +67,16 @@ namespace JSDelivrCLI.Services
         }
 
         // 获取包清单并下载
-        public async Task<bool> Download(ConfigPara para, string dir = "")
+        public async Task<bool> Download(ConfigItem item, string dir = "")
         {
-            Library package = await GetFileList(para);
+            Library package = await GetFileList(item);
 
             if(package == null)
                 return false;
             
             ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
-            bool flag = SaveFile(dir, para, string.Empty, package.Files);
+            bool flag = SaveFile(dir, item, string.Empty, package.Files);
 
             errorList.ForEach(i => 
             {
@@ -86,7 +86,7 @@ namespace JSDelivrCLI.Services
         }
 
         // 下载包
-        private bool SaveFile(string saveDir, ConfigPara para, string parentPath, List<LibraryFile> packageFile)
+        private bool SaveFile(string saveDir, ConfigItem item, string parentPath, List<LibraryFile> packageFile)
         {
             List<Task> tasks = new();
 
@@ -97,13 +97,13 @@ namespace JSDelivrCLI.Services
                     string path = Path.Combine(parentPath, file.Name);
                     if (file.Type == "directory")
                     {
-                        SaveFile(saveDir, para, path, file.Files);
+                        SaveFile(saveDir, item, path, file.Files);
                     }
                     else
                     {
-                        string dirName = Path.Combine(saveDir, para.Name, parentPath);
-                        string localPath = Path.Combine(saveDir, para.Name, path);
-                        string remotePath = Path.Combine(url, para.ToString(), path);
+                        string dirName = Path.Combine(saveDir, item.Name, parentPath);
+                        string localPath = Path.Combine(saveDir, item.Name, path);
+                        string remotePath = Path.Combine(url, item.ToString(), path);
 
                         try
                         {
