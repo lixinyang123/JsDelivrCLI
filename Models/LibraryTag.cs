@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace JSDelivrCLI.Models
 {
-    public class PackageTag
+    public class LibraryTag
     {
         [JsonPropertyName("beta")]
         public string Beta { get; set; }

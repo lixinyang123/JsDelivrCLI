@@ -3,17 +3,17 @@ using System.Text.Json.Serialization;
 
 namespace JSDelivrCLI.Models
 {
-    public class Package
+    public class Library
     {
-        public Package()
+        public Library()
         {
-            Files = new List<PackageFile>();
+            Files = new List<LibraryFile>();
         }
 
         [JsonPropertyName("default")]
         public string DefaultFile { get; set; }
 
         [JsonPropertyName("files")]
-        public List<PackageFile> Files { get; set; }
+        public List<LibraryFile> Files { get; set; }
     }
 }

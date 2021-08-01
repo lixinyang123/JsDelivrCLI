@@ -4,11 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace JSDelivrCLI.Models
 {
-    public class PackageFile
+    public class LibraryFile
     {
-        public PackageFile()
+        public LibraryFile()
         {
-            Files = new List<PackageFile>();
+            Files = new List<LibraryFile>();
         }
 
         [JsonPropertyName("type")]
@@ -27,6 +27,6 @@ namespace JSDelivrCLI.Models
         public int Size { get; set; }
 
         [JsonPropertyName("files")]
-        public List<PackageFile> Files { get; set; }
+        public List<LibraryFile> Files { get; set; }
     }
 }

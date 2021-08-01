@@ -24,19 +24,24 @@ namespace JSDelivrCLI.Services
             errorList = new List<string>();
         }
 
+        public void Search(string libraryName)
+        {
+
+        }
+
         // 获取包版本信息
-        public async Task<PackageVersion> GetLibraryVersions(string libraryName)
+        public async Task<LibraryVersion> GetLibraryVersions(string libraryName)
         {
             string path = Path.Combine(api, libraryName);
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<PackageVersion>(jsonStr);
+            return JsonSerializer.Deserialize<LibraryVersion>(jsonStr);
         }
 
         // 获取包文件列表
-        public async Task<Package> GetFileList(ConfigPara para)
+        public async Task<Library> GetFileList(ConfigPara para)
         {
-            PackageVersion version = await GetLibraryVersions(para.Name);
+            LibraryVersion version = await GetLibraryVersions(para.Name);
             if(string.IsNullOrEmpty(para.Version))
             {
                 ConsoleTool.WriteColorful($"Use latest version {version.Tag.Latest}\n", ConsoleColor.Green);
@@ -54,12 +59,13 @@ namespace JSDelivrCLI.Services
             
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Package>(jsonStr);
+            return JsonSerializer.Deserialize<Library>(jsonStr);
         }
 
+        // 获取包清单并下载
         public async Task<bool> Download(ConfigPara para, string dir = "")
         {
-            Package package = await GetFileList(para);
+            Library package = await GetFileList(para);
 
             if(package == null)
                 return false;
@@ -75,7 +81,8 @@ namespace JSDelivrCLI.Services
             return flag;
         }
 
-        private bool SaveFile(string saveDir, ConfigPara para, string parentPath, List<PackageFile> packageFile)
+        // 下载包
+        private bool SaveFile(string saveDir, ConfigPara para, string parentPath, List<LibraryFile> packageFile)
         {
             List<Task> tasks = new();
 
