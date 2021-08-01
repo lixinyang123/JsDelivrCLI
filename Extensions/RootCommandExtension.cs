@@ -62,7 +62,7 @@ namespace JSDelivrCLI.Extensions
                 {
                     Name = item.Name,
                     Version = item.Version,
-                    Destination = Path.Combine(dir, item.Name)
+                    Destination = Path.Combine(dir)
                 });
                 configService.Save();
             });
@@ -126,7 +126,7 @@ namespace JSDelivrCLI.Extensions
                 configService.GetLibraries().ForEach(library => 
                 {
                     ConfigItem para = new ConfigItem(library.Name, library.Version);
-                    bool result = cdnService.Download(para, library.Destination.Replace($"{para.Name}", string.Empty)).Result;
+                    bool result = cdnService.Download(para, library.Destination).Result;
 
                     if (result)
                         ConsoleTool.WriteColorful($"restore {library.Name} successful\n", ConsoleColor.Green);
