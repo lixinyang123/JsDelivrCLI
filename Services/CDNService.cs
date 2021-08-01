@@ -36,12 +36,17 @@ namespace JSDelivrCLI.Services
         // 获取包文件列表
         public async Task<Package> GetFileList(ConfigPara para)
         {
+            PackageVersion version = await GetLibraryVersions(para.Name);
             if(string.IsNullOrEmpty(para.Version))
             {
-                Console.WriteLine("Use latest version");
-                PackageVersion version = await GetLibraryVersions(para.Name);
-                ConsoleTool.WriteColorful($"Latest version is {version.Tag.Latest}\n", ConsoleColor.Green);
+                ConsoleTool.WriteColorful($"Use latest version {version.Tag.Latest}\n", ConsoleColor.Green);
                 para.Version = version.Tag.Latest;
+            }
+
+            if(!version.Versions.Contains(para.Version))
+            {
+                ConsoleTool.WriteColorful($"Can't find version {version.Tag.Latest}", ConsoleColor.Red);
+                return null;
             }
 
             string path = Path.Combine(api, para.ToString());
@@ -54,11 +59,14 @@ namespace JSDelivrCLI.Services
 
         public async Task<bool> Download(ConfigPara para, string dir = "")
         {
-            Package packageFile = await GetFileList(para);
+            Package package = await GetFileList(para);
+
+            if(package == null)
+                return false;
             
             ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
-            bool flag = SaveFile(dir, para, string.Empty, packageFile.Files);
+            bool flag = SaveFile(dir, para, string.Empty, package.Files);
 
             errorList.ForEach(i => 
             {
