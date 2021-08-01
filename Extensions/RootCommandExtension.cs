@@ -95,9 +95,9 @@ namespace JSDelivrCLI.Extensions
                     bool result = cdnService.Download(para, library.Destination.Replace($"{para.Name}", string.Empty));
 
                     if (result)
-                        ConsoleTool.WriteColorful($"\nrestore {library.Name} successful\n", ConsoleColor.Green);
+                        ConsoleTool.WriteColorful($"restore {library.Name} successful\n", ConsoleColor.Green);
                     else
-                        ConsoleTool.WriteColorful($"\nrestore {library.Name} faled\n", ConsoleColor.Red);
+                        ConsoleTool.WriteColorful($"restore {library.Name} faled\n", ConsoleColor.Red);
                 });
             });
             rootCommand.Add(restoreCommand);
