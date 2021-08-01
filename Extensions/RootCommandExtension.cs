@@ -44,7 +44,8 @@ namespace JSDelivrCLI.Extensions
                 ConfigItem searchItem = configService.GetLibrary(item.Name);
                 if(searchItem != null)
                 {
-                    Directory.Delete(searchItem.Destination);
+                    if(Directory.Exists(searchItem.Destination))
+                        Directory.Delete(searchItem.Destination, true);
                     configService.RemoveLibrary(item.Name);
                 }
 
