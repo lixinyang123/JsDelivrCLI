@@ -19,12 +19,14 @@ namespace JSDelivrCLI.Services
                 config = new Config();
         }
 
-        public void AddLibrary(ConfigItem item) => config.Libraries.Add(item);
+        public void AddLibrary(ConfigItem item) => 
+            config.Libraries.Add(item);
 
-        public void RemoveLibrary(string libraryName)
-        {
+        public void RemoveLibrary(string libraryName) =>
             config.Libraries.Remove(config.Libraries.SingleOrDefault(i => i.Name == libraryName));
-        }
+
+        public ConfigItem GetLibrary(string libraryName) =>
+            config.Libraries.SingleOrDefault(i => i.Name.Contains(libraryName));
 
         public void Save() => 
             File.WriteAllText(configPath,

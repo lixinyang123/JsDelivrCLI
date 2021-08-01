@@ -28,10 +28,7 @@ namespace JSDelivrCLI.Extensions
             Command initCommand = new Command("init", "Initialize a package configuration file");
             initCommand.Handler = CommandHandler.Create(() => 
             {
-                string configPath = "jsdelivr.json";
-                
-                if(!File.Exists(configPath))
-                    File.WriteAllText(configPath, JsonSerializer.Serialize(new Config()));
+                configService.Save();
             });
             rootCommand.Add(initCommand);
 
@@ -63,15 +60,25 @@ namespace JSDelivrCLI.Extensions
 
             //============================== Remove Command ==================================
             Command removeCommand = new Command("remove", "remove a package from local");
-            removeCommand.Handler = CommandHandler.Create<string>((packageName) => 
+            removeCommand.Add(new Argument<string>("libraryName", "remove library name"));
+            removeCommand.Handler = CommandHandler.Create<string>((libraryName) => 
             {
-                // Remove client side package
+                ConfigItem item = configService.GetLibrary(libraryName);
+                if (item ==null || !Directory.Exists(item.Destination))
+                {
+                    ConsoleTool.WriteColorful("Can't find this library", ConsoleColor.Red);
+                    return;
+                }
+                Directory.Delete(item.Destination, true);
+                configService.RemoveLibrary(item.Name);
+                configService.Save();
+                ConsoleTool.WriteColorful($"Remove {libraryName} successful", ConsoleColor.Green);
             });
             rootCommand.Add(removeCommand);
 
             //============================== Search Command ==================================
             Command searchCommand = new Command("search", "search package from npm");
-            searchCommand.Handler = CommandHandler.Create<string>((packageName) => 
+            searchCommand.Handler = CommandHandler.Create<string>((libraryName) => 
             {
                 // Search package from npm
             });
