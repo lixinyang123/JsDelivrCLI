@@ -2,6 +2,26 @@
 
 Install and consume 3rd-party client-side libraries from jsdelivr.
 
+### Install
+
+- Windows (PowerShell)
+  ```pwsh
+  iwr https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-win-x64.exe -OutFile delivr.exe
+  ```
+
+- Linux (Bash)
+  ```bash
+  curl https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-linux-x64 -o /usr/bin/delivr
+  chmod +x /usr/bin/delivr
+  ```
+
+- OSX (Bash)
+  ```bash
+  curl https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-osx-x64 -o /usr/bin/delivr
+  ```
+
+### Usage
+
 ```pwsh
 delivr
   JsDelivr CLI
@@ -40,6 +60,19 @@ Options:
   -?, -h, --help       Show help and usage information
 ```
 
+example:
+
+```pwsh
+# install jquery
+delivr install jquery
+
+# install jquery v3.6.0
+delivr install jquery --version 3.6.0
+
+# install jquery v3.6.0 in directory lib
+delivr install jquery --version 3.6.0 --dir lib
+```
+
 Config library configuration file
 
 ```json
@@ -57,4 +90,10 @@ Config library configuration file
     }
   ]
 }
+```
+
+restore dependences
+
+```pwsh
+delivr restore
 ```
