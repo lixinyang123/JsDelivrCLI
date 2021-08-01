@@ -60,10 +60,10 @@ namespace JSDelivrCLI.Extensions
 
             //============================== Remove Command ==================================
             Command removeCommand = new Command("remove", "remove a package from local");
-            removeCommand.Add(new Argument<string>("libraryName", "remove library name"));
-            removeCommand.Handler = CommandHandler.Create<string>((libraryName) => 
+            removeCommand.Add(new Argument<string>("library", "remove library name"));
+            removeCommand.Handler = CommandHandler.Create<string>((library) => 
             {
-                ConfigItem item = configService.GetLibrary(libraryName);
+                ConfigItem item = configService.GetLibrary(library);
                 if (item ==null || !Directory.Exists(item.Destination))
                 {
                     ConsoleTool.WriteColorful("Can't find this library", ConsoleColor.Red);
@@ -72,7 +72,7 @@ namespace JSDelivrCLI.Extensions
                 Directory.Delete(item.Destination, true);
                 configService.RemoveLibrary(item.Name);
                 configService.Save();
-                ConsoleTool.WriteColorful($"Remove {libraryName} successful", ConsoleColor.Green);
+                ConsoleTool.WriteColorful($"Remove {library} successful", ConsoleColor.Green);
             });
             rootCommand.Add(removeCommand);
 

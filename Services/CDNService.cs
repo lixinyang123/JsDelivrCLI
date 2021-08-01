@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using JSDelivrCLI.Common;
 using JSDelivrCLI.Models;
 
@@ -67,40 +68,47 @@ namespace JSDelivrCLI.Services
 
         private bool SaveFile(string saveDir, ConfigPara para, string parentPath, List<PackageFile> packageFile)
         {
+            List<Task> tasks = new();
+
             packageFile.ForEach(file => 
             {
-                string path = Path.Combine(parentPath, file.Name);
-                if (file.Type == "directory")
+                tasks.Add(Task.Run(() =>
                 {
-                    SaveFile(saveDir, para, path, file.Files);
-                }
-                else
-                {
-                    string dirName = Path.Combine(saveDir, para.Name, parentPath);
-                    string localPath = Path.Combine(saveDir, para.Name, path);
-                    string remotePath = Path.Combine(url, para.ToString(), path);
-                    
-                    try
+                    string path = Path.Combine(parentPath, file.Name);
+                    if (file.Type == "directory")
                     {
-                        if(File.Exists(localPath))
-                            return;
-
-                        HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
-                        string content = responseMessage.Content.ReadAsStringAsync().Result;
-
-                        Console.WriteLine($"Writefile {localPath}");
-                        if (!Directory.Exists(dirName))
-                            Directory.CreateDirectory(dirName);
-
-                        File.WriteAllText(localPath, content);
+                        SaveFile(saveDir, para, path, file.Files);
                     }
-                    catch (Exception)
+                    else
                     {
-                        ConsoleTool.WriteColorful($"Faled {localPath}", ConsoleColor.Red);
-                        errorList.Add(remotePath);
+                        string dirName = Path.Combine(saveDir, para.Name, parentPath);
+                        string localPath = Path.Combine(saveDir, para.Name, path);
+                        string remotePath = Path.Combine(url, para.ToString(), path);
+
+                        try
+                        {
+                            if (File.Exists(localPath))
+                                return;
+
+                            HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
+                            string content = responseMessage.Content.ReadAsStringAsync().Result;
+
+                            Console.WriteLine($"Writefile {localPath}");
+                            if (!Directory.Exists(dirName))
+                                Directory.CreateDirectory(dirName);
+
+                            File.WriteAllText(localPath, content);
+                        }
+                        catch (Exception)
+                        {
+                            ConsoleTool.WriteColorful($"Faled {localPath}", ConsoleColor.Red);
+                            errorList.Add(remotePath);
+                        }
                     }
-                }
+                }));
             });
+
+            Task.WaitAll(tasks.ToArray());
 
             return errorList.Count == 0;
         }
