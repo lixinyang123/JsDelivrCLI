@@ -3,11 +3,11 @@
 Install and consume 3rd-party client-side libraries from jsdelivr.
 
 ```pwsh
-JSDelivrCLI
+delivr
   JsDelivr CLI
 
 Usage:
-  JSDelivrCLI [options] [command]
+  delivr [options] [command]
 
 Options:
   --version       Show version information
@@ -29,7 +29,7 @@ install
   install a package from jsdelivr
 
 Usage:
-  JSDelivrCLI [options] install <library>
+  delivr [options] install <library>
 
 Arguments:
   <library>  library name and version
