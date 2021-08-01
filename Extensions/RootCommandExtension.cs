@@ -36,10 +36,10 @@ namespace JSDelivrCLI.Extensions
             Command installCommand = new Command("install", "install a package from jsdelivr");
             installCommand.Add(new Argument<string>("library", "library name and version \n eg. jquery \n eg. jquery@3.6.0"));
             installCommand.Add(new Option<string>("--dir", "library install directory"));
-            installCommand.Handler = CommandHandler.Create<string, string>((library, dir) => 
+            installCommand.Handler = CommandHandler.Create<string, string>(async (library, dir) => 
             {
                 ConfigPara para = new ConfigPara(library);
-                bool result = cdnService.Download(para, dir);
+                bool result = await cdnService.Download(para, dir);
 
                 if(!result)
                 {
@@ -95,7 +95,7 @@ namespace JSDelivrCLI.Extensions
                 configService.GetLibraries().ForEach(library => 
                 {
                     ConfigPara para = new ConfigPara(library.Name);
-                    bool result = cdnService.Download(para, library.Destination.Replace($"{para.Name}", string.Empty));
+                    bool result = cdnService.Download(para, library.Destination.Replace($"{para.Name}", string.Empty)).Result;
 
                     if (result)
                         ConsoleTool.WriteColorful($"restore {library.Name} successful\n", ConsoleColor.Green);

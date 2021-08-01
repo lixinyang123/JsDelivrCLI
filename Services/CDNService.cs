@@ -13,6 +13,7 @@ namespace JSDelivrCLI.Services
     {
         private readonly string api = "https://data.jsdelivr.com/v1/package/npm/";
         private readonly string url = "https://cdn.jsdelivr.net/npm/";
+        private readonly string searchApi = "https://registry.npmjs.org/-/v1/search?text=";
         private List<string> errorList;
 
         private readonly HttpClient httpClient;
@@ -24,21 +25,21 @@ namespace JSDelivrCLI.Services
         }
 
         // 获取包版本信息
-        public PackageVersion GetLibraryVersions(string libraryName)
+        public async Task<PackageVersion> GetLibraryVersions(string libraryName)
         {
             string path = Path.Combine(api, libraryName);
-            HttpResponseMessage responseMessage = httpClient.GetAsync(path).Result;
-            string jsonStr = responseMessage.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
+            string jsonStr = await responseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<PackageVersion>(jsonStr);
         }
 
         // 获取包文件列表
-        public Package GetFileList(ConfigPara para)
+        public async Task<Package> GetFileList(ConfigPara para)
         {
             if(string.IsNullOrEmpty(para.Version))
             {
                 Console.WriteLine("Use latest version");
-                PackageVersion version = GetLibraryVersions(para.Name);
+                PackageVersion version = await GetLibraryVersions(para.Name);
                 ConsoleTool.WriteColorful($"Latest version is {version.Tag.Latest}\n", ConsoleColor.Green);
                 para.Version = version.Tag.Latest;
             }
@@ -46,14 +47,14 @@ namespace JSDelivrCLI.Services
             string path = Path.Combine(api, para.ToString());
             Console.WriteLine("Get library info...");
             
-            HttpResponseMessage responseMessage = httpClient.GetAsync(path).Result;
-            string jsonStr = responseMessage.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
+            string jsonStr = await responseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Package>(jsonStr);
         }
 
-        public bool Download(ConfigPara para, string dir = "")
+        public async Task<bool> Download(ConfigPara para, string dir = "")
         {
-            Package packageFile = GetFileList(para);
+            Package packageFile = await GetFileList(para);
             
             ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
