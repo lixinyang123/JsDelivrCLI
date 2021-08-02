@@ -11,8 +11,8 @@ Install and consume 3rd-party client-side libraries from jsdelivr.
 
 - Linux (Bash)
   ```bash
-  curl https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-linux-x64 -o /usr/bin/delivr
-  chmod +x /usr/bin/delivr
+  sudo curl -L https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-linux-x64 -o /usr/bin/delivr
+  sudo chmod +x /usr/bin/delivr
   ```
 
 - OSX (Bash)
