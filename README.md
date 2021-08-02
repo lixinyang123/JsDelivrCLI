@@ -66,7 +66,7 @@ Options:
   -?, -h, --help       Show help and usage information
 ```
 
-example:
+Example:
 
 ```pwsh
 # install jquery
