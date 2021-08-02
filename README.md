@@ -1,4 +1,4 @@
-# JSDelivrCLI
+# JSDelivr command line Interface
 
 Install and consume 3rd-party client-side libraries from jsdelivr.
 
