@@ -98,7 +98,7 @@ Config library configuration file
 }
 ```
 
-restore dependences
+Restore dependences
 
 ```pwsh
 delivr restore
