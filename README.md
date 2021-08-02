@@ -4,9 +4,15 @@ Install and consume 3rd-party client-side libraries from jsdelivr.
 
 ### Install
 
-- Windows (PowerShell)
+- Windows (PowerShell Admin)
   ```pwsh
-  iwr https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-win-x64.exe -OutFile delivr.exe
+  $AddPath = 'C:\Program Files\JSDelivrCLI\'
+  if ($false -eq $(Test-Path $AddPath)) { mkdir $AddPath }
+  iwr https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-win-x64.exe -OutFile $($AddPath + 'delivr.exe')
+  $target = 'User'
+  $Path = [Environment]::GetEnvironmentVariable('Path', $target)
+  $NewPath = $Path + ';' + $AddPath
+  [Environment]::SetEnvironmentVariable('Path', $NewPath, $target)
   ```
 
 - Linux (Bash)
