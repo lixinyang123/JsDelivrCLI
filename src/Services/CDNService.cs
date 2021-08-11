@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
 using JSDelivrCLI.Common;
 using JSDelivrCLI.Models;
+using System.Text.Json;
 
 namespace JSDelivrCLI.Services
 {
@@ -14,7 +9,7 @@ namespace JSDelivrCLI.Services
         private readonly string api = "https://data.jsdelivr.com/v1/package/npm/";
         private readonly string url = "https://cdn.jsdelivr.net/npm/";
         private readonly string searchApi = "https://registry.npmjs.org/-/v1/search?text=";
-        private List<string> errorList;
+        private readonly List<string> errorList;
 
         private readonly HttpClient httpClient;
 
@@ -46,13 +41,13 @@ namespace JSDelivrCLI.Services
         public async Task<Library> GetFileList(ConfigItem item)
         {
             LibraryVersion version = await GetLibraryVersions(item.Name);
-            if(string.IsNullOrEmpty(item.Version))
+            if (string.IsNullOrEmpty(item.Version))
             {
                 ConsoleTool.WriteColorful($"Use latest version {version.Tag.Latest}\n", ConsoleColor.Green);
                 item.Version = version.Tag.Latest;
             }
 
-            if(!version.Versions.Contains(item.Version))
+            if (!version.Versions.Contains(item.Version))
             {
                 ConsoleTool.WriteColorful($"Can't find version {version.Tag.Latest}", ConsoleColor.Red);
                 return null;
@@ -60,7 +55,7 @@ namespace JSDelivrCLI.Services
 
             string path = Path.Combine(api, item.ToString());
             Console.WriteLine("Get library info...");
-            
+
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Library>(jsonStr);
@@ -71,14 +66,16 @@ namespace JSDelivrCLI.Services
         {
             Library package = await GetFileList(item);
 
-            if(package == null)
+            if (package == null)
+            {
                 return false;
-            
+            }
+
             ConsoleTool.WriteColorful("Start downloading...\n", ConsoleColor.Blue);
             errorList.Clear();
             bool flag = SaveFile(dir, item, string.Empty, package.Files);
 
-            errorList.ForEach(i => 
+            errorList.ForEach(i =>
             {
                 ConsoleTool.WriteColorful($"\nError: {i} download faled", ConsoleColor.Red);
             });
@@ -90,7 +87,7 @@ namespace JSDelivrCLI.Services
         {
             List<Task> tasks = new();
 
-            packageFile.ForEach(file => 
+            packageFile.ForEach(file =>
             {
                 tasks.Add(Task.Run(() =>
                 {
@@ -108,14 +105,18 @@ namespace JSDelivrCLI.Services
                         try
                         {
                             if (File.Exists(localPath))
+                            {
                                 return;
+                            }
 
                             HttpResponseMessage responseMessage = httpClient.GetAsync(remotePath).Result;
                             string content = responseMessage.Content.ReadAsStringAsync().Result;
 
                             Console.WriteLine($"Writefile {localPath}");
                             if (!Directory.Exists(dirName))
+                            {
                                 Directory.CreateDirectory(dirName);
+                            }
 
                             File.WriteAllText(localPath, content);
                         }

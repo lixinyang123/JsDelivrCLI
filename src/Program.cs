@@ -4,9 +4,9 @@ using System.CommandLine.Parsing;
 
 namespace JSDelivrCLI
 {
-    class Program
+    internal class Program
     {
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             RootCommand rootCommand = new RootCommand("JsDelivr CLI");
             rootCommand.Initialize();

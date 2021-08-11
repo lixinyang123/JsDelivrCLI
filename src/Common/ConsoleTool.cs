@@ -1,5 +1,3 @@
-using System;
-
 namespace JSDelivrCLI.Common
 {
     public static class ConsoleTool

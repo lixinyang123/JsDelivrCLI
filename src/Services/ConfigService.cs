@@ -1,8 +1,5 @@
 using JSDelivrCLI.Models;
-using System.IO;
 using System.Text.Json;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace JSDelivrCLI.Services
 {
@@ -14,26 +11,41 @@ namespace JSDelivrCLI.Services
 
         public ConfigService()
         {
-            if(File.Exists(configPath))
+            if (File.Exists(configPath))
+            {
                 config = JsonSerializer.Deserialize<Config>(File.ReadAllText(configPath));
+            }
             else
+            {
                 config = new Config();
+            }
         }
 
-        public void AddLibrary(ConfigItem item) => 
+        public void AddLibrary(ConfigItem item)
+        {
             config.Libraries.Add(item);
+        }
 
-        public void RemoveLibrary(string libraryName) =>
+        public void RemoveLibrary(string libraryName)
+        {
             config.Libraries.Remove(config.Libraries.SingleOrDefault(i => i.Name == libraryName));
+        }
 
-        public ConfigItem GetLibrary(string libraryName) =>
-            config.Libraries.SingleOrDefault(i => i.Name.Contains(libraryName));
+        public ConfigItem GetLibrary(string libraryName)
+        {
+            return config.Libraries.SingleOrDefault(i => i.Name.Contains(libraryName));
+        }
 
-        public void Save() => 
+        public void Save()
+        {
             File.WriteAllText(configPath,
-                JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
-            );
+JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
+);
+        }
 
-        public List<ConfigItem> GetLibraries() => config.Libraries;
+        public List<ConfigItem> GetLibraries()
+        {
+            return config.Libraries;
+        }
     }
 }

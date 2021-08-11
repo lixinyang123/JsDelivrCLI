@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace JSDelivrCLI.Models
@@ -17,7 +15,7 @@ namespace JSDelivrCLI.Models
         [JsonPropertyName("files")]
         public List<LibraryFile> Files { get; set; }
     }
-    
+
     public class LibraryFile
     {
         public LibraryFile()
