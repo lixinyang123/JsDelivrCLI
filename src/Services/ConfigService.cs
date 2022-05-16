@@ -39,8 +39,8 @@ namespace JSDelivrCLI.Services
         public void Save()
         {
             File.WriteAllText(configPath,
-JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
-);
+                JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
+            );
         }
 
         public List<ConfigItem> GetLibraries()
