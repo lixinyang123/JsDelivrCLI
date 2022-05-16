@@ -13,7 +13,7 @@ namespace delivr.Commands
         {
             configService = new();
 
-            Argument argument = new("library", "remove library name");
+            Argument argument = new Argument<string>("library", "remove library name");
             AddArgument(argument);
 
             this.SetHandler<string>(Execute, argument);

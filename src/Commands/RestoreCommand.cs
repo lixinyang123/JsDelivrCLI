@@ -20,7 +20,6 @@ namespace delivr.Commands
 
         private void Execute()
         {
-            // Restore client side package
             configService.GetLibraries().ForEach(library =>
             {
                 ConfigItem para = new(library.Name, library.Version);

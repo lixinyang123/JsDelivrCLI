@@ -15,19 +15,19 @@ namespace delivr.Commands
             configService = new();
             cdnService = new();
 
-            Argument argument = new("library", "library name");
-            AddArgument(argument);
+            Argument library = new Argument<string>("library", "library name");
+            AddArgument(library);
 
-            Option versionOption = new("--version", "library version");
-            AddOption(versionOption);
+            Option version = new Option<string>("--version", "library version");
+            AddOption(version);
 
-            Option dirOption = new("--dir", "library install directory");
-            AddOption(dirOption);
+            Option dir = new Option<string>("--dir", "library install directory");
+            AddOption(dir);
 
-            this.SetHandler<string, string, string>(Execute, argument, versionOption, dirOption);
+            this.SetHandler<string, string, string>(Execute, library, version, dir);
         }
 
-        private async void Execute(string library, string version, string dir)
+        private void Execute(string library, string version, string dir)
         {
             ConfigItem item = new(library, version);
 
@@ -42,7 +42,7 @@ namespace delivr.Commands
                 configService.RemoveLibrary(item.Name);
             }
 
-            bool result = await cdnService.Download(item, dir);
+            bool result = cdnService.Download(item, dir).Result;
             if (!result)
             {
                 ConsoleTool.WriteColorful("\nSome file download faled", ConsoleColor.Red);

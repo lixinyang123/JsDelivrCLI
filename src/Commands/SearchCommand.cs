@@ -12,15 +12,15 @@ namespace delivr.Commands
         {
             cdnService = new();
 
-            Argument argument = new("library", "search library name");
+            Argument argument = new Argument<string>("library", "search library name");
             AddArgument(argument);
 
             this.SetHandler<string>(Execute, argument);
         }
 
-        private async void Execute(string library)
+        private void Execute(string library)
         {
-            SearchInfo searchInfo = await cdnService.Search(library);
+            SearchInfo searchInfo = cdnService.Search(library).Result;
             searchInfo.objects.ForEach(obj =>
             {
                 Console.WriteLine($"{obj.package.name} => {obj.package.version}");

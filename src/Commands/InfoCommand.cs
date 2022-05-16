@@ -13,15 +13,15 @@ namespace delivr.Commands
         {
             cdnService = new();
 
-            Argument argument = new("library", "search library name");
+            Argument argument = new Argument<string>("library", "search library name");
             AddArgument(argument);
 
-            this.SetHandler<string>(Execute);
+            this.SetHandler<string>(Execute, argument);
         }
 
-        private async void Execute(string library)
+        private void Execute(string library)
         {
-            LibraryVersion libraryVersion = await cdnService.GetLibraryVersions(library);
+            LibraryVersion libraryVersion = cdnService.GetLibraryVersions(library).Result;
             libraryVersion.Versions.ForEach(version =>
             {
                 if (libraryVersion.Tag.Latest == version)
