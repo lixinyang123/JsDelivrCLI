@@ -15,7 +15,7 @@ namespace delivr.Commands
             configService = new();
             cdnService = new();
 
-            Argument argument = new("library", "library name and version");
+            Argument argument = new("library", "library name");
             AddArgument(argument);
 
             Option versionOption = new("--version", "library version");
