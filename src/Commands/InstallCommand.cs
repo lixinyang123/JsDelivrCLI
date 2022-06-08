@@ -29,6 +29,7 @@ namespace delivr.Commands
 
         private void Execute(string library, string version, string dir)
         {
+            dir ??= string.Empty;
             ConfigItem item = new(library, version);
 
             ConfigItem searchItem = configService.GetLibrary(item.Name);

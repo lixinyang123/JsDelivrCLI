@@ -62,7 +62,7 @@ namespace JSDelivrCLI.Services
         }
 
         // 获取包清单并下载
-        public async Task<bool> Download(ConfigItem item, string dir = "")
+        public async Task<bool> Download(ConfigItem item, string dir)
         {
             Library package = await GetFileList(item);
 
