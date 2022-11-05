@@ -9,10 +9,8 @@ Install and consume 3rd-party client-side libraries from jsdelivr.
   $InstallPath = 'C:\Program Files\JSDelivrCLI\'
   if ($false -eq $(Test-Path $InstallPath)) { mkdir $InstallPath }
   iwr https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-win-x64.exe -OutFile $($InstallPath + 'delivr.exe')
-  $Target = 'User'
-  $Path = [Environment]::GetEnvironmentVariable('Path', $Target)
-  $NewPath = $Path + ';' + $InstallPath
-  [Environment]::SetEnvironmentVariable('Path', $NewPath, $Target)
+  $Path = [Environment]::GetEnvironmentVariable('Path', 'User')
+  [Environment]::SetEnvironmentVariable('Path', $Path + ';' + $InstallPath, 'User')
   ```
 
 - Linux (Bash)
@@ -103,4 +101,41 @@ Restore dependences
 
 ```pwsh
 delivr restore
+```
+
+
+### How to Contribute?
+
+Install pre-requisites
+
+- .NET 7
+
+##### On Windows
+
+- Visit [.NET official website](https://dotnet.microsoft.com/) to download .NET 6.0 SDK
+
+##### On Linux
+
+- Install .NET SDK
+    - Ubuntu
+    ```bash
+    apt install dotnet-sdk-7.0 -y
+    ```
+
+    - CentOS
+    ```bash
+    dnf install dotnet-sdk-7.0 -y
+    ```
+
+### Restore dependencies
+
+```bash
+dotnet restore
+```
+
+### Build & Run
+
+```bash
+dotnet build
+dotnet run
 ```
