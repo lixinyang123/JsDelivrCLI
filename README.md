@@ -133,9 +133,10 @@ Install pre-requisites
 dotnet restore
 ```
 
-### Build & Run
+### Build & Run & Publish
 
 ```bash
 dotnet build
 dotnet run
+dotnet publish -r win-x64 -c Release
 ```
