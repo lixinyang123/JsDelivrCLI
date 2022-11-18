@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace JSDelivrCLI.Models
 {
     public class ConfigItem
@@ -20,4 +22,7 @@ namespace JSDelivrCLI.Models
             return $"{Name}@{Version}";
         }
     }
+
+    [JsonSerializable(typeof(ConfigItem))]
+    internal partial class ConfigItemJsonCtx : JsonSerializerContext { }
 }

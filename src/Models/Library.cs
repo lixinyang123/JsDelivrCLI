@@ -16,6 +16,9 @@ namespace JSDelivrCLI.Models
         public List<LibraryFile> Files { get; set; }
     }
 
+    [JsonSerializable(typeof(Library))]
+    internal partial class LibraryJsonCtx : JsonSerializerContext { }
+
     public class LibraryFile
     {
         public LibraryFile()
@@ -41,4 +44,7 @@ namespace JSDelivrCLI.Models
         [JsonPropertyName("files")]
         public List<LibraryFile> Files { get; set; }
     }
+
+    [JsonSerializable(typeof(LibraryFile))]
+    internal partial class LibraryFileJsonCtx : JsonSerializerContext { }
 }

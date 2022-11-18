@@ -1,4 +1,5 @@
 using JSDelivrCLI.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace JSDelivrCLI.Services
@@ -9,11 +10,12 @@ namespace JSDelivrCLI.Services
 
         private readonly Config config;
 
+        [RequiresDynamicCode("Calls System.Text.Json.JsonSerializer.Deserialize(string, Type)")]
         public ConfigService()
         {
             if (File.Exists(configPath))
             {
-                config = JsonSerializer.Deserialize<Config>(File.ReadAllText(configPath));
+                config = JsonSerializer.Deserialize(File.ReadAllText(configPath), ConfigJsonCtx.Default.Config);
             }
             else
             {
@@ -36,11 +38,10 @@ namespace JSDelivrCLI.Services
             return config.Libraries.SingleOrDefault(i => i.Name.Contains(libraryName));
         }
 
+        [RequiresDynamicCode("Calls System.Text.Json.JsonSerializer.Serialize(object, Type)")]
         public void Save()
         {
-            File.WriteAllText(configPath,
-                JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true })
-            );
+            File.WriteAllText(configPath, JsonSerializer.Serialize(config, ConfigJsonCtx.Default.Config));
         }
 
         public List<ConfigItem> GetLibraries()

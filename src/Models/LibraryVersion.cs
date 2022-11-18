@@ -16,6 +16,9 @@ namespace JSDelivrCLI.Models
         public List<string> Versions { get; set; }
     }
 
+    [JsonSerializable(typeof(LibraryVersion))]
+    internal partial class LibraryVersionJsonCtx : JsonSerializerContext { }
+
     public class LibraryTag
     {
         [JsonPropertyName("beta")]
@@ -24,4 +27,7 @@ namespace JSDelivrCLI.Models
         [JsonPropertyName("latest")]
         public string Latest { get; set; }
     }
+
+    [JsonSerializable(typeof(LibraryTag))]
+    internal partial class LibraryTagJsonCtx : JsonSerializerContext { }
 }

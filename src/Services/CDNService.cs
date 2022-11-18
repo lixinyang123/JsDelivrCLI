@@ -24,7 +24,7 @@ namespace JSDelivrCLI.Services
         {
             HttpResponseMessage responseMessage = await httpClient.GetAsync(searchApi + libraryName);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            SearchInfo searchInfo = JsonSerializer.Deserialize<SearchInfo>(jsonStr);
+            SearchInfo searchInfo = JsonSerializer.Deserialize(jsonStr, SearchInfoJsonCtx.Default.SearchInfo);
             return searchInfo;
         }
 
@@ -34,7 +34,7 @@ namespace JSDelivrCLI.Services
             string path = Path.Combine(api, libraryName);
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<LibraryVersion>(jsonStr);
+            return JsonSerializer.Deserialize(jsonStr, LibraryVersionJsonCtx.Default.LibraryVersion);
         }
 
         // 获取包文件列表
@@ -58,7 +58,7 @@ namespace JSDelivrCLI.Services
 
             HttpResponseMessage responseMessage = await httpClient.GetAsync(path);
             string jsonStr = await responseMessage.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Library>(jsonStr);
+            return JsonSerializer.Deserialize(jsonStr, LibraryJsonCtx.Default.Library);
         }
 
         // 获取包清单并下载
