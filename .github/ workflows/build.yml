@@ -3,13 +3,10 @@ name: Build
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
 
   release-windows:
-
     runs-on: windows-latest
 
     steps:
@@ -27,7 +24,6 @@ jobs:
       run: dotnet publish -r win-x64 -c Release
 
   release-linux:
-
     runs-on: ubuntu-latest
 
     steps:
