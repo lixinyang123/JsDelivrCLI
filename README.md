@@ -1,29 +1,12 @@
 # JSDelivr command line Interface
 
+Built with NativeAOT.
+
 Install and consume 3rd-party client-side libraries from jsdelivr.
 
 ### Install
 
-- Windows (PowerShell Admin)
-  ```pwsh
-  $InstallPath = 'C:\Program Files\JSDelivrCLI\'
-  if ($false -eq $(Test-Path $InstallPath)) { mkdir $InstallPath }
-  iwr https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-win-x64.exe -OutFile $($InstallPath + 'delivr.exe')
-  $Path = [Environment]::GetEnvironmentVariable('Path', 'User')
-  [Environment]::SetEnvironmentVariable('Path', $Path + ';' + $InstallPath, 'User')
-  ```
-
-- Linux (Bash)
-  ```bash
-  sudo curl -L https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-linux-x64 -o /usr/bin/delivr
-  sudo chmod +x /usr/bin/delivr
-  ```
-
-- OSX (Bash)
-  ```bash
-  curl -L https://github.com/lixinyang123/JSDelivrCLI/releases/download/v1.0.0-release.1/delivr-osx-x64 -o /usr/local/bin/delivr
-  chmod +x /usr/local/bin/delivr
-  ```
+Download from Release page.
 
 ### Usage
 
@@ -108,11 +91,17 @@ delivr restore
 
 Install pre-requisites
 
-- .NET 7
+- Windows
+  - Visual Studio 2022, including `.NET workload` and `Desktop development with C++ workload`.
+
+- Linux
+  - .NET 7 SDK
+  - libicu-dev
+  - cmake
 
 ##### On Windows
 
-- Visit [.NET official website](https://dotnet.microsoft.com/) to download .NET 6.0 SDK
+- Visit [official website](https://visualstudio.microsoft.com/) to download Visual Studio 2022.
 
 ##### On Linux
 
@@ -120,11 +109,13 @@ Install pre-requisites
     - Ubuntu
     ```bash
     apt install dotnet-sdk-7.0 -y
+    apt install libicu-dev cmake -y
     ```
 
     - CentOS
     ```bash
     dnf install dotnet-sdk-7.0 -y
+    dnf install libicu-dev cmake -y
     ```
 
 ### Restore dependencies
@@ -133,9 +124,17 @@ Install pre-requisites
 dotnet restore
 ```
 
-### Build & Run
+### Build & Run & Publish
 
 ```bash
 dotnet build
 dotnet run
+```
+
+### Publish with NativeAOT
+
+```bash
+dotnet publish -r win-x64 -c Release
+dotnet publish -r linux-x64 -c Release
+dotnet publish -r osx-x64 -c Release
 ```
