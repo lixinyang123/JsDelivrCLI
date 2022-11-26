@@ -4,13 +4,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-	  <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+	<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
     <PublishAot>true</PublishAot>
-	  <StripSymbols>true</StripSymbols>
+	<StripSymbols>true</StripSymbols>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0" />
+    <PackageReference Include="PublishAotCompressed" Version="1.0.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
