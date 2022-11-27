@@ -1,4 +1,4 @@
-# JSDelivr command line Interface
+# JsDelivr command line Interface
 
 Built with NativeAOT.
 
