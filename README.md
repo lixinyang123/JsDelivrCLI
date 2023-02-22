@@ -93,7 +93,7 @@ Install pre-requisites
   - Visual Studio 2022, including `.NET workload` and `Desktop development with C++ workload`.
 
 - Linux
-  - .NET 7 SDK
+  - .NET 8 SDK
   - libicu-dev
   - cmake
 
@@ -106,13 +106,13 @@ Install pre-requisites
 - Install .NET SDK
     - Ubuntu
     ```bash
-    apt install dotnet-sdk-7.0 -y
+    apt install dotnet-sdk-8.0 -y
     apt install libicu-dev cmake -y
     ```
 
     - CentOS
     ```bash
-    dnf install dotnet-sdk-7.0 -y
+    dnf install dotnet-sdk-8.0 -y
     dnf install libicu-dev cmake -y
     ```
 
