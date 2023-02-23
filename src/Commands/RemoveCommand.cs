@@ -3,7 +3,6 @@ using JSDelivrCLI.Models;
 using JSDelivrCLI.Services;
 using System.CommandLine;
 using System.CommandLine.Binding;
-using System.Diagnostics.CodeAnalysis;
 
 namespace delivr.Commands
 {
@@ -21,19 +20,21 @@ namespace delivr.Commands
             this.SetHandler(Execute, argument);
         }
 
-        [RequiresDynamicCode("Calls JSDelivrCLI.Services.ConfigService.Save()")]
         private void Execute(string library)
         {
             ConfigItem item = configService.GetLibrary(library);
+            
             if (item == null)
             {
                 ConsoleTool.WriteColorful("Can't find this library", ConsoleColor.Red);
                 return;
             }
 
-            if (Directory.Exists(item.Destination))
+            string libPath = Path.Combine(item.Destination, item.Name);
+
+            if (!string.IsNullOrEmpty(libPath))
             {
-                Directory.Delete(item.Destination, true);
+                Directory.Delete(libPath, true);
             }
 
             configService.RemoveLibrary(item.Name);
