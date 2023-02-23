@@ -3,7 +3,6 @@ using JSDelivrCLI.Models;
 using JSDelivrCLI.Services;
 using System.CommandLine;
 using System.CommandLine.Binding;
-using System.Diagnostics.CodeAnalysis;
 
 namespace delivr.Commands
 {
@@ -12,7 +11,6 @@ namespace delivr.Commands
         private readonly ConfigService configService;
         private readonly CDNService cdnService;
 
-        [RequiresDynamicCode("Calls JSDelivrCLI.Services.ConfigService.ConfigService()")]
         public InstallCommand() : base("install", "install a package from jsdelivr")
         {
             configService = new();
@@ -30,7 +28,6 @@ namespace delivr.Commands
             this.SetHandler(Execute, library, version, dir);
         }
 
-        [RequiresDynamicCode("Calls JSDelivrCLI.Services.ConfigService.Save()")]
         private void Execute(string library, string version, string dir)
         {
             dir ??= string.Empty;
