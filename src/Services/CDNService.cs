@@ -7,7 +7,7 @@ namespace JSDelivrCLI.Services
     public class CDNService
     {
         private readonly string api = "https://data.jsdelivr.com/v1/package/npm/";
-        private readonly string url = "https://cdn.jsdelivr.net/npm/";
+        private readonly string url = "https://fastly.jsdelivr.net/npm/";
         private readonly string searchApi = "https://registry.npmjs.org/-/v1/search?text=";
         private readonly List<string> errorList;
 
