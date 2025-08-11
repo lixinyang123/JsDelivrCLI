@@ -13,6 +13,7 @@
   <ItemGroup>
 
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="9.0.7" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.19" />
     <PackageReference Include="PublishAotCompressed" Version="1.0.5" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta6.25358.103" />
   </ItemGroup>
