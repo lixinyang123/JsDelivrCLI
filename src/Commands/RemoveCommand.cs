@@ -14,10 +14,17 @@ namespace delivr.Commands
         {
             configService = new();
 
-            IValueDescriptor<string> argument = new Argument<string>("library", "remove library name");
-            AddArgument((Argument)argument);
+            Argument<string> argument = new("library")
+            {
+                Description = "remove library name"
+            };
+            Add(argument);
 
-            this.SetHandler(Execute, argument);
+            SetAction(result =>
+            {
+                string library = result.GetValue(argument);
+                Execute(library);
+            });
         }
 
         private void Execute(string library)

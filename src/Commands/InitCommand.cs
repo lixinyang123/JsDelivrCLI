@@ -10,7 +10,7 @@ namespace delivr.Commands
         public InitCommand() : base("init", "Initialize a package configuration file")
         {
             configService = new();
-            this.SetHandler(Execute);
+            SetAction(_ => Execute());
         }
 
         private void Execute()

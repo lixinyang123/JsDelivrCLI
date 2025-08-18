@@ -2,7 +2,6 @@
 using JSDelivrCLI.Models;
 using JSDelivrCLI.Services;
 using System.CommandLine;
-using System.CommandLine.Binding;
 
 namespace delivr.Commands
 {
@@ -16,16 +15,31 @@ namespace delivr.Commands
             configService = new();
             cdnService = new();
 
-            IValueDescriptor<string> library = new Argument<string>("library", "library name");
-            AddArgument((Argument)library);
+            Argument<string> libraryArgument = new("library")
+            {
+                Description = "search library name"
+            };
+            Add(libraryArgument);
 
-            IValueDescriptor<string> version = new Option<string>("--version", "library version");
-            AddOption((Option)version);
+            Option<string> versionOption = new("--version")
+            {
+                Description = "library version"
+            };
+            Options.Add(versionOption);
 
-            IValueDescriptor<string> dir = new Option<string>("--dir", "library install directory");
-            AddOption((Option)dir);
+            Option<string> dirOption = new("--dir")
+            {
+                Description = "library install directory"
+            };
+            Options.Add(dirOption);
 
-            this.SetHandler(Execute, library, version, dir);
+            SetAction(result =>
+            {
+                string libary = result.GetRequiredValue(libraryArgument);
+                string version = result.GetValue(versionOption) ?? string.Empty;
+                string dir = result.GetValue(dirOption) ?? string.Empty;
+                Execute(libary, version, dir);
+            });
         }
 
         private void Execute(string library, string version, string dir)

@@ -15,7 +15,7 @@ namespace delivr.Commands
         {
             configService = new();
             cdnService = new();
-            this.SetHandler(Execute);
+            SetAction(_ => Execute());
         }
 
         private void Execute()

@@ -2,7 +2,6 @@
 using JSDelivrCLI.Models;
 using JSDelivrCLI.Services;
 using System.CommandLine;
-using System.CommandLine.Binding;
 
 namespace delivr.Commands
 {
@@ -14,10 +13,17 @@ namespace delivr.Commands
         {
             cdnService = new();
 
-            IValueDescriptor<string> argument = new Argument<string>("library", "search library name");
-            AddArgument((Argument)argument);
+            Argument<string> argument = new("library")
+            {
+                Description = "search library name"
+            };
+            Add(argument);
 
-            this.SetHandler(Execute, argument);
+            SetAction(result =>
+            {
+                string value = result.GetValue(argument);
+                Execute(value);
+            });
         }
 
         private void Execute(string library)
