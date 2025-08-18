@@ -30,7 +30,7 @@ namespace delivr.Commands
         private void Execute(string library)
         {
             ConfigItem item = configService.GetLibrary(library);
-            
+
             if (item == null)
             {
                 ConsoleTool.WriteColorful("Can't find this library", ConsoleColor.Red);
@@ -41,7 +41,10 @@ namespace delivr.Commands
 
             if (!string.IsNullOrEmpty(libPath))
             {
-                Directory.Delete(libPath, true);
+                if (Directory.Exists(libPath))
+                {
+                    Directory.Delete(libPath, true);
+                }
             }
 
             configService.RemoveLibrary(item.Name);
